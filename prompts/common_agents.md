@@ -374,6 +374,45 @@ Never trust data crossing a boundary you don't control. Validate, sanitize, and 
 >
 > Keep entries here concise and opinionated. This is not a wiki — it is a decision log and a fast-ramp document. If something belongs in a README or full ADR, link to it from here rather than duplicating it.
 
+### When to Update
+
+**After any architectural decision.**
+If a non-trivial choice was made — a library selected, a pattern adopted, a shortcut taken under constraint — record it here before closing the task. If it was worth deciding, it is worth documenting.
+
+**After discovering an undocumented convention.**
+If you encounter a pattern that is clearly intentional but not written down anywhere, add it. The test: would a new engineer be confused or make a different choice without this information?
+
+**After any deviation from Parts I–III.**
+If this project deliberately breaks a universal principle — for a valid reason — document the deviation and the reason here. Undocumented exceptions become invisible landmines.
+
+**After resolving a non-obvious bug or integration issue.**
+If the root cause required understanding something specific to this project's setup, add a note. Save the next person the same investigation.
+
+**When onboarding context changes.**
+If the team, stack, or deployment environment changes in a meaningful way, update this section so it continues to serve as a reliable fast-ramp document.
+
+### How to Write Entries
+
+**Be specific and opinionated.** Vague entries ("use good patterns") have no value. Entries should tell an engineer exactly what to do or not do in this project.
+
+**Include the reason, not just the rule.** A rule without context will be ignored or misapplied. One sentence of "why" makes an entry ten times more useful.
+
+**Link, don't duplicate.** If a full explanation lives in a README, ADR, or external doc, link to it. Don't maintain two copies of the same truth.
+
+**Date significant entries.** For decisions that may age or be revisited, a date provides useful context on whether the entry is still current.
+
+**Remove stale entries.** An outdated entry is worse than no entry — it actively misleads. When a decision is reversed or a convention is retired, delete or replace the entry. Do not leave dead rules in place.
+
+### Format for a Project-Specific Entry
+
+```markdown
+###
+
+**Rule:**
+**Why:**
+**See also:**
+```
+
 <!-- ─────────────────────────────────────────────
      ADD PROJECT-SPECIFIC CONTENT BELOW THIS LINE
      ───────────────────────────────────────────── -->
