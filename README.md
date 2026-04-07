@@ -10,12 +10,13 @@ A curated collection of AI prompts for development, productivity, and creative t
 │   ├── coding/         # Programming & development prompts
 │   ├── writing/        # Writing & content creation prompts
 │   └── productivity/   # Workflow & efficiency prompts
+├── pm-frameworks/      # Product management frameworks and method guides
 └── README.md
 ```
 
 ## Usage
 
-Copy any prompt and paste it into your AI assistant. Customize as needed.
+Copy any prompt and paste it into your AI assistant. Browse pm-frameworks for standalone framework references and playbooks.
 
 ## Contributing
 
