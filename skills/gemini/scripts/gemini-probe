@@ -20,7 +20,7 @@ gemini_auth_probe() {
   local _k1 _k2
   _k1=$(printf '%s' "${GOOGLE_API_KEY:-}" | tr -d '[:space:]')
   _k2=$(printf '%s' "${GEMINI_API_KEY:-}" | tr -d '[:space:]')
-  if [ -n "$_k1" ] || [ -n "$_k2" ] || [ -f "$_gemini_home/auth.json" ] || [ -f "$HOME/.config/gemini/auth.json" ]; then
+  if [ -n "$_k1" ] || [ -n "$_k2" ] || [ -f "$_gemini_home/auth.json" ] || [ -f "$_gemini_home/oauth_creds.json" ] || [ -f "$HOME/.config/gemini/auth.json" ]; then
     echo "AUTH_OK"
     return 0
   fi

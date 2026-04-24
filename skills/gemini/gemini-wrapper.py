@@ -54,6 +54,7 @@ def check_auth() -> bool:
     return bool(
         k1 or k2
         or Path(f"{gemini_home}/auth.json").exists()
+        or Path(f"{gemini_home}/oauth_creds.json").exists()
         or Path.home().joinpath(".config/gemini/auth.json").exists()
     )
 
@@ -78,10 +79,11 @@ def get_base_branch() -> str:
 
 
 def get_diff(base: str) -> str:
-    repo_root = subprocess.run(
+    repo_result = subprocess.run(
         ["git", "rev-parse", "--show-toplevel"],
         capture_output=True, text=True
-    ).stdout.strip()
+    )
+    repo_root = repo_result.stdout.strip() if repo_result.returncode == 0 else os.getcwd()
 
     result = subprocess.run(
         ["git", "diff", f"origin/{base}"],
@@ -127,6 +129,7 @@ def build_gemini_cmd(prompt: str, model: str | None = None, session_id: str | No
     cmd = [
         "gemini", "-p", prompt,
         "--approval-mode", "plan",
+        "--skip-trust",
         "-o", "stream-json",
     ]
     if model:
@@ -134,6 +137,11 @@ def build_gemini_cmd(prompt: str, model: str | None = None, session_id: str | No
     if session_id:
         cmd.extend(["--resume", session_id])
     return cmd
+
+
+def get_repo_root() -> str:
+    result = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True)
+    return result.stdout.strip() if result.returncode == 0 else os.getcwd()
 
 
 def run_review(base: str, custom_instructions: str = "", model: str | None = None) -> None:
@@ -146,11 +154,7 @@ def run_review(base: str, custom_instructions: str = "", model: str | None = Non
     if custom_instructions:
         prompt += f"\n\nAdditional focus: {custom_instructions}"
 
-    repo_root = subprocess.run(
-        ["git", "rev-parse", "--show-toplevel"],
-        capture_output=True, text=True
-    ).stdout.strip()
-
+    repo_root = get_repo_root()
     cmd = build_gemini_cmd(prompt, model)
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=repo_root)
     output, session_id, exit_code = parse_gemini_stream_json(process)
@@ -178,11 +182,7 @@ def run_challenge(base: str, focus: str = "", model: str | None = None) -> None:
             f"Focus specifically on {focus.upper()}. Be adversarial. No compliments — just the problems."
         )
 
-    repo_root = subprocess.run(
-        ["git", "rev-parse", "--show-toplevel"],
-        capture_output=True, text=True
-    ).stdout.strip()
-
+    repo_root = get_repo_root()
     cmd = build_gemini_cmd(prompt, model)
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=repo_root)
     output, session_id, exit_code = parse_gemini_stream_json(process)
@@ -196,11 +196,7 @@ def run_challenge(base: str, focus: str = "", model: str | None = None) -> None:
 def run_consult(question: str, model: str | None = None, session_id: str | None = None) -> str | None:
     prompt = f"{FILESYSTEM_BOUNDARY}\n\n{question}"
 
-    repo_root = subprocess.run(
-        ["git", "rev-parse", "--show-toplevel"],
-        capture_output=True, text=True
-    ).stdout.strip()
-
+    repo_root = get_repo_root()
     cmd = build_gemini_cmd(prompt, model, session_id)
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=repo_root)
     output, new_session_id, exit_code = parse_gemini_stream_json(process)
