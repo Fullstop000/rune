@@ -132,8 +132,8 @@ def build_gemini_cmd(prompt: str, model: str | None = None, session_id: str | No
         "--skip-trust",
         "-o", "stream-json",
     ]
-    if model:
-        cmd.extend(["-m", model])
+    # Default to flash for speed/cost; user can override with -m
+    cmd.extend(["-m", model if model else "gemini-3-flash-preview"])
     if session_id:
         cmd.extend(["--resume", session_id])
     return cmd

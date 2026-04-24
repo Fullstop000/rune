@@ -84,11 +84,14 @@ THE DIFF:
 
 Append custom instructions (e.g. "focus on security") before "THE DIFF:" if provided.
 
-3. Run the review in read-only mode with streaming JSON output (10-minute timeout):
+3. Run the review in read-only mode with streaming JSON output (10-minute timeout).
+   Default model is `gemini-3-flash-preview` for speed and cost efficiency.
+   If the user passed `-m <model>`, use that instead.
 
 ```bash
 TMPRESP=$(mktemp /tmp/gemini-resp-XXXXXX.txt)
-timeout 600 gemini -p "$PROMPT" --approval-mode plan -o stream-json < /dev/null 2>/dev/null | python3 -u -c "
+_MODEL="${USER_MODEL:-gemini-3-flash-preview}"
+timeout 600 gemini -p "$PROMPT" --approval-mode plan --skip-trust -m "$_MODEL" -o stream-json < /dev/null 2>/dev/null | python3 -u -c "
 import sys, json
 for line in sys.stdin:
     line = line.strip()
@@ -105,8 +108,6 @@ for line in sys.stdin:
     except: pass
 " > "$TMPRESP"
 ```
-
-Include `-m <model>` if the user specified one.
 
 4. Read `$TMPRESP`. Determine gate verdict:
    - `[P1]` found → **FAIL**
@@ -149,6 +150,7 @@ With focus (e.g. "security"):
 ```
 
 3. Run Gemini with stream-json (10-minute timeout), same parser as 2A.
+   Use `-m gemini-3-flash-preview` by default unless the user specified another model.
 
 4. Present:
 ```
@@ -227,9 +229,13 @@ Session saved — run /gemini again to continue this conversation.
 
 ## Model Selection
 
-**Default:** No `-m` flag — Gemini CLI uses its default (typically `gemini-3.1-pro-preview`).
+**Default:** `gemini-3-flash-preview` — fast, cost-effective, good for review tasks.
 
-**Override:** If the user specifies `-m <model>`, pass it through.
+**Override:** If the user specifies `-m <model>`, pass it through instead of the default.
+
+To switch models, the user says something like: `/gemini review -m gemini-3-pro-preview`
+
+Available models:
 
 ## Error Handling
 
