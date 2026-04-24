@@ -11,11 +11,12 @@ A curated collection of AI prompts for development, productivity, and creative t
 │   ├── writing/        # Writing & content creation prompts
 │   └── productivity/   # Workflow & efficiency prompts
 ├── pm-frameworks/      # Product management frameworks and method guides
-├── gemini/             # Gemini CLI skill — multi-AI second opinion
-│   ├── SKILL.md        # Skill definition for Claude Code / Kimi
-│   ├── bin/
-│   │   └── gemini-probe # Auth probe & timeout helper
-│   └── gemini-wrapper.py # Standalone Python implementation
+├── skills/             # Claude Code / Kimi skills
+│   └── gemini/         # Gemini CLI skill — multi-AI second opinion
+│       ├── SKILL.md        # Skill definition for Claude Code / Kimi
+│       ├── bin/
+│       │   └── gemini-probe # Auth probe & timeout helper
+│       └── gemini-wrapper.py # Standalone Python implementation
 └── README.md
 ```
 
